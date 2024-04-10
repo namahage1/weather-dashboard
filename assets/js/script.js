@@ -1,23 +1,59 @@
 let cityName = "Castle Rock";//default just in case does not show up
-const inputCityEl = document.querySelector('#search-field');
+let  inputCityEl = document.querySelector('#search-field');
 const apiKey = "657dd3403e0d0b938737ea9d758485c0";
+let forecastList = JSON.parse(localStorage.getItem("forecast_history")) || [];
+let currentWeatherList = JSON.parse(localStorage.getItem("currentWeather_history")) || [];
 
 const requestOptions = {
     method: "GET",
     redirect: "follow"
   };
 
+
+  function getSearchHistory(container){
+    console.log(forecastList[0]);
+    const historyBtn = document.createElement("button");
+    historyBtn.classList.add("btn");
+   historyBtn.classList.add("btn-secondary");
+    historyBtn.classList.add("btn-sm");
+    historyBtn.classList.add("hty-btn");
+    historyBtn.setAttribute("onclick","myFunction()");// onclick="myFunction()
+    historyBtn.textContent = cityName;
+    container.append(historyBtn);
+    return container;
+  }
+  function myFunction() {
+    document.getElementById("demo").innerHTML = "Hello World";
+  }
+
+  function setSearchHistory(forecast, today){
+
+    if(forecast){
+
+    forecastList.push(forecast);
+     localStorage.setItem('forecast_history', JSON.stringify(forecastList));
+    }
+    if(today){
+      currentWeatherList.push(today);
+      localStorage.setItem('currentWeather_history', JSON.stringify(currentWeatherList));
+    }
+
+
+  }
   const citySearchHandler = function (event) {
     event.preventDefault();
   
     cityName =  document.getElementById('city_name').value;
     if (cityName) {
-        console.log("city name is " + cityName);
         getCoords(cityName);
     } else {
       alert('Please enter a city name');
     }
-  };
+    const listOfHstBtn = document.getElementById("list-hst-btn");
+    getSearchHistory(listOfHstBtn);
+    
+    document.getElementById('search-field').reset();
+  }
 
   function clearElements(id){
     const parentDOM = document.getElementById(id);
@@ -27,11 +63,12 @@ const requestOptions = {
   console.log("empty element");
   }
   
+
   function getCurrentWeather(lat,lon){
     fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=imperial`, requestOptions)
     .then((response) => response.json())
     .then((result) => {
-
+      setSearchHistory(null, result);
       let citynameInputEl = document.getElementById("city");
       citynameInputEl.textContent = "Today's " + result.name;
 
@@ -59,8 +96,7 @@ function getForcast(lat, lon){
   fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=imperial`, requestOptions)
     .then((response) => response.json())
     .then((result) => {
-
-        console.log(result);
+      setSearchHistory(result, null);
 
         const selectedData = [
             result.list[0],
@@ -114,7 +150,6 @@ function getForcast(lat, lon){
             newCardDiv.append(newCardUl);//<div class="card" style="width: 18rem;">
                                         //   <ul><li>
         
-
         }
         const myH1 = document.getElementById("searched-city")
         myH1.textContent = "5 day forcast: " + result.city.name; //display searched city on the element of <h1 id=searched-city>

@@ -39,8 +39,7 @@ header{
   }
   
   .search-area {
-  
-    height: 100px;
+
     width:20%;
     height:inherit;
   }
@@ -60,7 +59,7 @@ h2{
 
 .search-form{
     margin:left;
-    max-width:300px"
+    max-width:300px;
 }
 
 form.search-form input[type=text] {
@@ -94,3 +93,28 @@ form.search-form input[type=text] {
     height: auto;
     align-self: center;
   }
+
+  #list-hst-btn {
+      /* align-content:; */
+      color: rgb(221, 221, 221);
+      line-height: 0;
+      padding: 10px 24px;
+      /* Some padding */
+      cursor: pointer;
+      /* Pointer/hand icon */
+      width:150px;
+      /* Set a width if needed */
+      display: inline-block;
+      /* Make the buttons appear below each other */
+      margin:auto;
+      text-align:inherit;
+      margin-top:0;
+      margin-bottom: 50px;
+
+  }
+
+  #list-hst-btn button:not(:last-child) {
+      border-bottom: none;
+      /* Prevent double borders */
+  }
+  
