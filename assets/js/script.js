@@ -22,7 +22,7 @@ const requestOptions = {
   function clearElements(id){
     const parentDOM = document.getElementById(id);
     if(parentDOM){
-      parentDOM.parentNode.removeChild(parentDOM);
+     document.getElementById(id).innerHTML = "";
   }else
   console.log("empty element");
   }
@@ -32,8 +32,25 @@ const requestOptions = {
     .then((response) => response.json())
     .then((result) => {
 
-        console.log(result);
-        return result;
+      let citynameInputEl = document.getElementById("city");
+      citynameInputEl.textContent = "Today's " + result.name;
+
+      clearElements("today-area");
+
+      const todayWeatherImg = document.createElement("img");
+      todayWeatherImg.setAttribute("src", "https://openweathermap.org/img/wn/"+result.weather[0].icon+"@2x.png");
+      const todayArea = document.getElementById("today-area");
+      todayArea.append(citynameInputEl);
+      todayArea.append(todayWeatherImg);
+      const tmp = document.createElement("div");
+      tmp.textContent = "Temp : " + result.main.temp + " F ";
+      const humid = document.createElement("div");
+      humid.textContent = "Humidity : " + result.main.humidity + " % ";
+      const wind = document.createElement("div");
+      wind.textContent = "Wind : " + result.wind.speed + " MPH ";
+      todayArea.append(tmp) ;
+      todayArea.append(humid) ;
+      todayArea.append(wind) ;
     })
     
   }
@@ -46,7 +63,7 @@ function getForcast(lat, lon){
         console.log(result);
 
         const selectedData = [
-          result.list[0],
+            result.list[0],
             result.list[8],
             result.list[16],
             result.list[24],
@@ -60,19 +77,6 @@ function getForcast(lat, lon){
             newCardDiv.setAttribute("id", "parentDOM");
 
         for([i,s] of selectedData.entries()){
-            // <div class="card" style="width: 18rem;">
-            //     <div class="card-header">
-            //         04 08 2024
-            //     </div>
-            //     <img src="https://openweathermap.org/img/wn/10d@2x.png"/>
-            //     <ul class="list-group list-group-flush">
-            //         <li class="list-group-item">Temp: </li>
-            //         <li class="list-group-item">Humidity: </li>
-            //         <li class="list-group-item">Wind Speed: </li>
-            //     </ul>
-            // </div>
-            
-
             const newDateDiv = document.createElement("div"); //<div class="card-header"></div>
             newDateDiv.classList.add("card-header");
             newDateDiv.textContent = dayjs(s.dt_txt).format('MM/DD/YYYY'); //displays date
@@ -90,8 +94,6 @@ function getForcast(lat, lon){
 
             const newCardUl = document.createElement("ul");
             newCardUl.classList = "list-group list-group-flush";
-            // newCardUl.classList.add("list-group")
-            // newCardUl.classList.add("list-group-flush")
 
             const newCardTmpLi = document.createElement("li");
             newCardTmpLi.classList.add("list-group-item");
@@ -99,25 +101,23 @@ function getForcast(lat, lon){
 
             const newCardHumLi = document.createElement("li");
             newCardHumLi.classList.add("list-group-item");
-            newCardHumLi.textContent = s.main.humidity + " %";
+            newCardHumLi.textContent = "Humidity: " + s.main.humidity + " %";
 
             const newCardWindLi = document.createElement("li");
             newCardWindLi.classList.add("list-group-item");
-            newCardWindLi.textContent = s.wind.speed + " MPH";
+            newCardWindLi.textContent = "Wind : " + s.wind.speed + " MPH";
 
-            newCardUl.append(newCardTmpLi) //<ul> <li>
-            newCardUl.append(newCardHumLi)
-            newCardUl.append(newCardWindLi)
+            newCardUl.append(newCardTmpLi); //<ul> <li>
+            newCardUl.append(newCardHumLi);
+            newCardUl.append(newCardWindLi);
 
-            newCardDiv.append(newCardUl)//<div class="card" style="width: 18rem;">
+            newCardDiv.append(newCardUl);//<div class="card" style="width: 18rem;">
                                         //   <ul><li>
-
-                   // render the data into the page
         
 
         }
         const myH1 = document.getElementById("searched-city")
-        myH1.textContent = result.city.name //display searched city on the element of <h1 id=searched-city>
+        myH1.textContent = "5 day forcast: " + result.city.name; //display searched city on the element of <h1 id=searched-city>
         const mainContainer = document.getElementById("forecast-container");
         if(mainContainer){
           mainContainer.append(newCardDiv);
@@ -126,11 +126,6 @@ function getForcast(lat, lon){
         }
         
         let todayWeather = getCurrentWeather(lat,lon);
-        // dayjs('2019-01-25').format('DD/MM/YYYY')
-        // const todayDate = document.getElementById("today-date");
-        // // todayDate.textContent = dayjs().add(1, "day").format('DD/MM/YYYY')
-        // todayDate.textContent = dayjs().add(0, "day").format('DD/MM/YYYY')
-
 
     })
     .catch((error) => console.error(error));
@@ -146,6 +141,3 @@ function getCoords(city = cityName){
 }
 getCoords()//render the first time
 inputCityEl.addEventListener('submit', citySearchHandler);
-//need to get city name from form to function
-//show the forcast on the screen
-//store in local storage
