@@ -36,9 +36,13 @@ header{
   #forecast-container{
  
     height:fit-content;
-    justify-content: center;
+    justify-content: center; 
   }
-  
+  #cardContainer{
+    text-align: left;
+    height:fit-content;
+    justify-content: center; 
+  }
   .search-area {
 
     width:20%;
@@ -97,7 +101,7 @@ form.search-form input[type=text] {
 
   #list-hst-btn {
       /* align-content:; */
-      color: rgb(221, 221, 221);
+      color: rgb(221, 221, 221); ;
       line-height: 0;
       padding: 10px 24px;
       /* Some padding */

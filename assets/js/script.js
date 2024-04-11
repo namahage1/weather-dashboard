@@ -19,19 +19,23 @@ function getSearchHistory(container) {
   historyBtn.classList.add("btn-sm");
   historyBtn.classList.add("hty-btn");
 
-  historyBtn.setAttribute("onclick", citySearchHandler);
-
   historyBtn.textContent = cityName;
+  historyBtn.setAttribute("id",cityName.trim());
+ 
   container.append(historyBtn);
+  displayStoredCityWeather(cityName);
   return container;
 }
-// function displayStoredCityWeather(city) {
+function displayStoredCityWeather(cityname){
+  cityName = cityname;
 
-//   //TODO: clear the previous contents
+  let element = document.getElementById(cityName);
+  if(element){
+  element.addEventListener("click", citySearchHandler);
+}
+}
 
-//   getCoords(city);
-// }
-
+//saving searched info in local storage
 function setSearchHistory(forecast, today) {
 
   if (forecast) {
@@ -44,16 +48,22 @@ function setSearchHistory(forecast, today) {
     localStorage.setItem('currentWeather_history', JSON.stringify(currentWeatherList));
   }
 
-
 }
+//called when either search button or city name button is clicked 
 const citySearchHandler = function (event) {
   event.preventDefault();
-  clearElements("omaewokesu");
+  clearElements("cardContainer");
   cityName = document.getElementById('city_name').value;
+
+
   if (cityName) {
     getCoords(cityName);
   } else {
-    alert('Please enter a city name');
+    if(event.target.id){
+      getCoords(event.target.id);
+    }else{
+      alert('Please enter a city name');
+    }
   }
   const listOfHstBtn = document.getElementById("list-hst-btn");
   getSearchHistory(listOfHstBtn);
@@ -67,20 +77,15 @@ function clearElements(id) {
 
   if (parentDOM) {
     let child = parentDOM.lastElementChild;
-  //  console.log(parentDOM);
     while (child) {
       parentDOM.removeChild(child);
       child = parentDOM.lastElementChild;
     }
-
-    //  parentDOM.innerHTML = "";
   } else
     console.log("empty element");
 }
-/*
-to do: get the city name when user click the one of the history buttons then render the city again
-*/
 
+//for displaying current weather
 function getCurrentWeather(lat, lon) {
   fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=imperial`, requestOptions)
     .then((response) => response.json())
@@ -107,7 +112,7 @@ function getCurrentWeather(lat, lon) {
     })
 
 }
-//TODO: fix appeding to previous search
+//get list of weather info from latitude and longtitude
 function getForcast(lat, lon) {
   fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=imperial`, requestOptions)
     .then((response) => response.json())
@@ -129,23 +134,18 @@ function getForcast(lat, lon) {
 
       for ([i, s] of selectedData.entries()) {
 
-        //TODO:Delete counters
-        let counter=0;counter+=1;
-        console.log("counter " + counter );
         const newDateDiv = document.createElement("div"); //<div class="card-header"></div>
         newDateDiv.classList.add("card-header");
         newDateDiv.textContent = dayjs(s.dt_txt).format('MM/DD/YYYY'); //displays date
 
         newCardDiv.append(newDateDiv); //now  <div class="card" style="width: 18rem;">
-        //       <div class="card-header">
-
-
+                                     //       <div class="card-header">
         // create iamge
         const newCardImg = document.createElement("img");
         newCardImg.setAttribute("src", "https://openweathermap.org/img/wn/" + s.weather[0].icon + "@2x.png")
 
         newCardDiv.append(newCardImg); //<div class="card" style="width: 18rem;">
-        //          <img src=...>
+                                      //          <img src=...>
 
         const newCardUl = document.createElement("ul");
         newCardUl.classList = "list-group list-group-flush";
@@ -167,23 +167,23 @@ function getForcast(lat, lon) {
         newCardUl.append(newCardWindLi);
 
         newCardDiv.append(newCardUl);//<div class="card" style="width: 18rem;">
-        //   <ul><li>
+                                     //   <ul><li>
 
       }
         let myH1 = null;
     
-        const omaewokesu = document.getElementById("omaewokesu");
-        omaewokesu.setAttribute('id', 'omaewokesu');
+        const cardContainer = document.getElementById("cardContainer");
+        cardContainer.setAttribute('id', 'cardContainer');
 
         myH1 = document.createElement("h2");
         myH1.setAttribute("id", "searched-city");
       myH1.textContent = "5 day forcast: " + result.city.name; //display searched city on the element of <h1 id=searched-city>
-      omaewokesu.append(myH1);
-      omaewokesu.append(newCardDiv);
+      cardContainer.append(myH1);
+      cardContainer.append(newCardDiv);
       const mainContainer = document.getElementById("forecast-container");
 
       if (mainContainer) {
-        mainContainer.append(omaewokesu);
+        mainContainer.append(cardContainer);
       } else {
         console.log("forecast-container is null");
       }
@@ -200,9 +200,9 @@ function getCoords(city = cityName) {
   fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&limit=1&appid=${apiKey}`, requestOptions)
     .then((response) =>
       response.json())
-    .then((result) =>
-      getForcast(result.city.coord.lat, result.city.coord.lon))
-    .catch((error) => alert("city name does not exit"));
+    .then((result) =>{
+      getForcast(result.city.coord.lat, result.city.coord.lon)})
+    .catch((error) => {alert("city name does not exit")});
 }
 
 getCoords()//render the first time
