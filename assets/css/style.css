@@ -36,6 +36,7 @@ header{
   #forecast-container{
  
     height:fit-content;
+    justify-content: center;
   }
   
   .search-area {

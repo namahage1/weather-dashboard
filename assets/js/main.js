@@ -7,9 +7,7 @@ const formSubmitHandler = function (event) {
   
     if (cityname) {
         getWeatherApi(cityname);
-  
-    //   repoContainerEl.textContent = '';
-    //   nameInputEl.value = '';
+
     } else {
       alert('Please enter a City name');
     }
@@ -34,7 +32,6 @@ const formSubmitHandler = function (event) {
   };
   const displayWeather = function (apis, searchTerm) {
     if (apis.length === 0) {
-    //   repoContainerEl.textContent = 'No repositories found.';
     console.log("error");
       return;
     }
