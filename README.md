@@ -1,5 +1,5 @@
 weather dashboard
-repository: git@github.com:namahage1/weather-dashboard.git
+repository: [git@github.com:namahage1/weather-dashboard.git](https://github.com/namahage1/weather-dashboard.git)
 URL: https://namahage1.github.io/weather-dashboard/
 
 When user enter the city in search field, it shows the city's today's weather and 5 days of forecast.
